@@ -1,0 +1,17 @@
+{
+  "id": "presence-thermostat",
+  "type": "recipe",
+  "name": "Presence Thermostat",
+  "version": "1.0.0",
+  "description": "Adjusts thermostat setpoint based on zone presence with night mode, preheat windows, and cocoon boost",
+  "icon": "Thermometer",
+  "repo": "mchacher/sowel-recipe-presence-thermostat",
+  "author": "mchacher",
+  "tags": ["automation", "heating", "thermostat", "presence"],
+  "i18n": {
+    "fr": {
+      "name": "Thermostat présence",
+      "description": "Ajuste la consigne du thermostat selon la présence dans la zone, avec mode nuit, préchauffe et cocoon."
+    }
+  }
+}
