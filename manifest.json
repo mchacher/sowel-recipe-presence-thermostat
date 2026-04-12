@@ -7,11 +7,17 @@
   "icon": "Thermometer",
   "repo": "mchacher/sowel-recipe-presence-thermostat",
   "author": "mchacher",
-  "tags": ["automation", "heating", "thermostat", "presence"],
+  "tags": [
+    "automation",
+    "heating",
+    "thermostat",
+    "presence"
+  ],
   "i18n": {
     "fr": {
       "name": "Thermostat présence",
       "description": "Ajuste la consigne du thermostat selon la présence dans la zone, avec mode nuit, préchauffe et cocoon."
     }
-  }
+  },
+  "sowelVersion": ">=0.10.0"
 }
