@@ -14,11 +14,6 @@ interface RecipeContext {
       dataBindings: Array<{ alias: string }>;
       orderBindings: Array<{ alias: string; enumValues?: string[] }>;
     } | null;
-    executeOrder(
-      equipmentId: string,
-      alias: string,
-      value: unknown,
-    ): Promise<{ success: boolean; error?: string }>;
   };
   zoneManager: {
     getById(id: string): { id: string; name: string } | null;
@@ -36,6 +31,13 @@ interface RecipeContext {
     clear(): void;
   };
   log: (message: string, level?: "info" | "warn" | "error") => void;
+  // Spec 101 — dispatches an order attributed to this recipe instance, so the
+  // activity feed names the recipe as its source.
+  dispatchOrder(
+    equipmentId: string,
+    alias: string,
+    value: unknown,
+  ): Promise<{ success: boolean; error?: string }>;
   helpers: {
     parseDuration(value: unknown): number;
     formatDuration(ms: number): string;
@@ -620,8 +622,8 @@ export function createRecipe(): RecipeDefinition {
         ctx.state.set("currentMode", "comfort");
         setpointGraceUntil = Date.now() + 5000;
         lastSentSetpoint = target;
-        ctx.equipmentManager
-          .executeOrder(thermostatId, "setpoint", target)
+        ctx
+          .dispatchOrder(thermostatId, "setpoint", target)
           .then((r) => {
             if (!r.success)
               ctx.log(`Setpoint → ${target}°C FAILED: ${r.error}`, "error");
@@ -638,8 +640,8 @@ export function createRecipe(): RecipeDefinition {
         ctx.state.set("currentMode", "eco");
         setpointGraceUntil = Date.now() + 5000;
         lastSentSetpoint = ecoTemp;
-        ctx.equipmentManager
-          .executeOrder(thermostatId, "setpoint", ecoTemp)
+        ctx
+          .dispatchOrder(thermostatId, "setpoint", ecoTemp)
           .then((r) => {
             if (!r.success)
               ctx.log(`Setpoint → ${ecoTemp}°C FAILED: ${r.error}`, "error");
@@ -660,8 +662,8 @@ export function createRecipe(): RecipeDefinition {
         clearTimerState();
         setpointGraceUntil = Date.now() + 5000;
         lastSentSetpoint = cocoonTemp!;
-        ctx.equipmentManager
-          .executeOrder(thermostatId, "setpoint", cocoonTemp!)
+        ctx
+          .dispatchOrder(thermostatId, "setpoint", cocoonTemp!)
           .then((r) => {
             if (!r.success)
               ctx.log(`Setpoint → ${cocoonTemp}°C FAILED: ${r.error}`, "error");
@@ -679,8 +681,8 @@ export function createRecipe(): RecipeDefinition {
         clearTimerState();
         setpointGraceUntil = Date.now() + 5000;
         lastSentSetpoint = nightTemp!;
-        ctx.equipmentManager
-          .executeOrder(thermostatId, "setpoint", nightTemp!)
+        ctx
+          .dispatchOrder(thermostatId, "setpoint", nightTemp!)
           .then((r) => {
             if (!r.success)
               ctx.log(`Setpoint → ${nightTemp}°C FAILED: ${r.error}`, "error");

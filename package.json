@@ -1,6 +1,6 @@
 {
   "name": "sowel-recipe-presence-thermostat",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sowel recipe: Presence Thermostat — adjusts thermostat setpoint based on zone presence",
   "type": "module",
   "main": "dist/index.js",
