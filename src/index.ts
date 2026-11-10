@@ -953,6 +953,10 @@ export function createRecipe(): RecipeDefinition {
         onAction(action: string, payload?: Record<string, unknown>): void {
           if (action !== "set_mode" || !payload?.mode) return;
           const mode = payload.mode as string;
+          // A mode whose setpoint is not configured is ignored, before it can
+          // touch anything (the core no longer offers it, core #1210).
+          if (mode === "cocoon" && cocoonTemp === null) return;
+          if (mode === "night" && nightTemp === null) return;
 
           // Clear override if active — user is explicitly choosing a mode
           if (overrideMode) {
