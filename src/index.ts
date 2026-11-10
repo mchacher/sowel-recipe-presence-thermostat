@@ -64,7 +64,8 @@ interface RecipeActionDef {
   id: string;
   type: "cycle";
   stateKey: string;
-  options: { value: string; label: string }[];
+  /** `requiresParam` (core #1210): offered only when that instance parameter is set. */
+  options: { value: string; label: string; requiresParam?: string }[];
   /** Core spec 201 — equipment slots the mode applies to; their Dashboard cards show it. */
   targets?: string[];
 }
@@ -274,8 +275,9 @@ export function createRecipe(): RecipeDefinition {
         options: [
           { value: "eco", label: "Eco" },
           { value: "comfort", label: "Comfort" },
-          { value: "cocoon", label: "Cocoon" },
-          { value: "night", label: "Night" },
+          // Offered only when their setpoint is configured (core #1210).
+          { value: "cocoon", label: "Cocoon", requiresParam: "cocoonTemp" },
+          { value: "night", label: "Night", requiresParam: "nightTemp" },
         ],
         // The thermostat's Dashboard card shows the mode (core spec 201); the
         // cocoon buttons, which the recipe only reads, do not.
@@ -951,6 +953,10 @@ export function createRecipe(): RecipeDefinition {
         onAction(action: string, payload?: Record<string, unknown>): void {
           if (action !== "set_mode" || !payload?.mode) return;
           const mode = payload.mode as string;
+          // A mode whose setpoint is not configured is ignored, before it can
+          // touch anything (the core no longer offers it, core #1210).
+          if (mode === "cocoon" && cocoonTemp === null) return;
+          if (mode === "night" && nightTemp === null) return;
 
           // Clear override if active — user is explicitly choosing a mode
           if (overrideMode) {
